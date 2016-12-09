@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<style>
+			body,ul{padding: 0;margin: 0;}
+			body{ background:url(img/0002.jpg) 0px -280px; font-family: "微软雅黑";font-size: 16px;font-weight:500;overflow: hidden;}
+			
+			.nav{ text-align:center; height: 50px; position: relative;width: 1366px;top: 100px;}
+			.nav ul{position: absolute;width: 510px;left: 50%;margin-left: -255px;}
+			.nav li{list-style: none;float: left; text-align: center;width: 102px;height: 24px;overflow: hidden;}
+			.nav li a{color: #666; display: block;text-decoration: none;}
+			.nav li a.active{color: #fff;}
+			.nav li a:hover{color: #fff;}
+			.nav a.all{color: #fff; float: right;position: relative;right:80px;}
+			.nav a:hover{color: #28a267;cursor: pointer;}
+			.continar{height:414px ;position: relative; top: 100px;}
+			#content{position: absolute; width: 1200px;height: 450px;left: 50%;margin-left: -600px;overflow: hidden;}
+			#content ol{position: absolute;z-index: 999999;width:120px;left: 50%;margin-left: -100px;top:95%;list-style: none;}
+			#content ol li{width: 30px;height: 3px;background: rgba(100,100,100,0.8);float: left;margin-right: 10px;cursor: pointer;}
+			
+			#content ol li.active1{background: #FFFFFF;opacity: 1;}
+			#content ul{width: 6000px;list-style: none; overflow: hidden;height: 414px;background: rgba(0,0,0,0.5);position: relative;left: -1200px;}
+			#content li{float: left; height: 300px;position: relative;}
+			#content li a {text-decoration: none;}
+			#content a img{vertical-align: top;}
+			.mark{padding-top: 32px; height: 82px;transition:background 500ms;}
+			.mark:hover{background: #28A267;}
+			.mark h3{margin: 0;text-align: center; color: #FFFFFF;font-size: 16px;font-weight: normal;text-decoration: none;cursor: pointer;}
+			.mark p{margin-top: 8px;text-align: center;color: #999;font-size: 15px;font-weight: normal;text-decoration: none;cursor: pointer;}
+			#mark_left{position: absolute; left: -72px;top: 50%;margin-top: -120px;width: 72px;height:108px; background: rgba(76,76,76,0.8);transition: background 500ms,width 500ms;}
+			#mark_right{position: absolute;right:-72px;top: 50%;margin-top: -120px;width: 72px;height:108px;background: rgba(76,76,76,0.8);transition: background 500ms,width 500ms;}
+			#mark_left a,#mark_right a{text-decoration: none;font-size: 50px;display: block;width: 72px;text-align: center; height:108px;line-height: 108px;color: #FFFFFF; opacity: 1;}
+			#mark_left:hover,#mark_right:hover{background: #28A267;width: 82px;}
+			.btn{height:0px;width:0px;position: absolute;left: 50%;margin-left: -35px;top:50%;margin-top: -35px;overflow: hidden;opacity: 0;}
+		</style>
+		<script src="js/完美运动框架.js"></script>
+		<script>
+			window.onload=function()
+			{
+				var oBox=document.getElementById('box');
+				var oPrve=document.getElementById('mark_left');
+				var oNext=document.getElementById('mark_right');
+				var oDiv=document.getElementById('content');
+				var oOl=oDiv.getElementsByTagName('ol')[0];
+				var aFocus=oOl.getElementsByTagName('li');
+				var now=0,now1=0;
+				var timer=null;
+
+				var oUl=oDiv.getElementsByTagName('ul')[0];
+				var aLi=oUl.getElementsByTagName('li');
+				//上一张和下一张按钮划入/划出,显示/隐藏
+				oBox.onmouseover=function()
+				{
+					startmove(oPrve,{'left':0});
+					startmove(oNext,{'right':0});
+				}
+				oBox.onmouseout=function()
+				{
+					startmove(oPrve,{'left':-72});
+					startmove(oNext,{'right':-72});
+				}
+				//播放按钮划入显示，划出隐藏
+				for(var i=0;i<aLi.length;i++)
+				{
+					aLi[i].onmouseover=function()
+					{	
+						
+						startmove(this.children[0].children[0],{'width':300,'height':300,'opacity':100})
+						return false;
+					}
+					aLi[i].onmouseout=function()
+					{
+						startmove(this.children[0].children[0],{'width':0,'height':0,'opacity':0})
+						return false;
+					}					
+				}
+				//焦点click事件实现区域
+				for(var i=0;i<aFocus.length;i++)
+				{
+					aFocus[i].index=i;
+					
+						aFocus[i].onclick=function()
+					{
+						if(now==this.index)
+						{
+							return;
+						}
+						now=this.index;
+						now1=now;
+						tab();
+					}
+				}
+				//主要功能（实现移动效果的内容）
+				function tab()
+				{
+					for(var i=0;i<aFocus.length;i++)
+					{
+						aFocus[i].className=''; //清处所有焦点样式
+					}
+					aFocus[now].className='active1';//为当前焦点添加样式
+					startmove(oUl,{'left':-(now1+1)*1200})//UL向左/右移动
+				}
+				//下一张
+				function next()
+				{
+					now++;
+					now1++;
+					if(now==aFocus.length)
+					{
+						now=0;
+					}
+					if(now1==4)
+					{
+						
+						now1=1;
+						oUl.style.left='-1200px';
+					}
+					tab();
+				}
+				//上一张
+				function prev()
+				{
+					now--;
+					now1--;
+					if(now==-1)
+					{
+						now=aFocus.length-1;
+					}
+					if(now1==-2)
+					{
+						now1=aFocus.length-2;
+						oUl.style.left='-3600px'
+					}
+					tab();
+				}
+				//向左按钮事件
+				oNext.onclick=function()
+				{
+					next();
+				}
+				//向右按钮事件
+				oPrve.onclick=function()
+				{
+					prev();
+				}
+				//添加定时器
+				timer=setInterval(next,3000);
+				//划入清楚定时器
+				oDiv.onmouseover=function()
+				{
+					clearInterval(timer);
+				}
+				//划出开启定时器
+				oDiv.onmouseout=function()
+				{
+					timer=setInterval(next,3000);
+				}				
+			}
+		</script>
+	</head>
+	<body>
+		<nav class="nav">
+			<ul>
+				<li><a class="active" href="#">全部</a></li>
+				<li><a href="#">华语</a></li>
+				<li><a href="#">欧美</a></li>
+				<li><a href="#">韩国</a></li>
+				<li><a href="#">日本</a></li>
+			</ul>
+			<a class="all">全部</a>
+		</nav>
+		<section class="continar" id="box">
+				<div id="mark_left">
+					<a><</a>
+				</div>
+				<div id="mark_right">
+					<a>></a>
+				</div>
+			<div id="content">
+				<!--ol是焦点区域-->
+				<ol>
+					<li class="active1"></li>
+					<li></li>
+					<li></li>
+				</ol>
+				
+				<ul>
+					<li><a href=""><div class="btn"><img src="img/button.png"></div><img src="img/9.jpg"></a>
+						<div id="" class='mark'>
+							<h3>good bye my love</h3>
+							<p>鬼束ちひろ</p>
+						</div>
+					</li>
+					<li><a href=""><div class="btn"><img src="img/button.png"></div><img src="img/10.jpg"></a>
+						<div id="" class='mark'>
+							<h3>LUB DUB</h3>
+							<p>투엘슨</p>
+						</div>
+					</li>
+					<li><a href=""><div class="btn"><img src="img/button.png"></div><img src="img/11.jpg"></a>
+						<div id="" class='mark'>
+							<h3>Forget Me Not</h3>
+							<p>中島美嘉 </p>
+						</div>
+					</li>
+					<li><a href=""><div class="btn"><img src="img/button.png"></div><img src="img/12.jpg"></a>
+						<div class="mark">
+							<h3>恋ごころ</h3>
+							<p>Da-iCE</p>
+						</div>
+					</li>
+					
+					<li><a href=""><div class="btn"><img src="img/button.png"></div><img src="img/1.jpg"></a>
+						<div id="" class='mark'>
+							<h3>MEMORY</h3>
+							<p>MAMAMOO</p>
+						</div>
+					</li>
+					<li><a href=""><div class="btn"><img src="img/button.png"></div><img src="img/2.jpg"></a>
+						<div id="" class='mark'>
+							<h3>NEW MEN</h3>
+							<p>BTOB</p>
+						</div>
+					</li>
+					<li><a href=""><div class="btn"><img src="img/button.png"></div><img src="img/3.jpg"></a>
+						<div id="" class='mark'>
+							<h3>NOIR</h3>
+							<p>B.A.P</p>
+						</div>
+					</li>
+					<li><a href=""><div class="btn"><img src="img/button.png"></div><img src="img/4.jpg"></a>
+						<div id="" class='mark'>
+							<h3>王者归来 第6期</h3>
+							<p>王者归来</p>
+						</div>
+					</li>
+					<li><a href=""><div class="btn"><img src="img/button.png"></div><img src="img/5.jpg"></a>
+						<div id="" class='mark'>
+							<h3>长大以后的世界</h3>
+							<p>王源</p>
+						</div>
+					</li>
+					<li><a href=""><div class="btn"><img src="img/button.png"></div><img src="img/6.jpg"></a>
+						<div id="" class='mark'>
+							<h3>秘密</h3>
+							<p>陈楚生δSPY.C</p>
+						</div>
+					</li>
+					<li><a href=""><div class="btn"><img src="img/button.png"></div><img src="img/7.jpg"></a>
+						<div id="" class='mark'>
+							<h3>梦想的声音第一期</h3>
+							<p>梦想的声音</p>
+						</div>
+					</li>
+					<li><a href=""><div class="btn"><img src="img/button.png"></div><img src="img/8.jpg"></a>
+						<div id="" class='mark'>
+							<h3>GET Ready</h3>
+							<p>板野友美</p>
+						</div>
+					</li>
+					<li><a href=""><div class="btn"><img src="img/button.png"></div><img src="img/9.jpg"></a>
+						<div id="" class='mark'>
+							<h3>good bye my love</h3>
+							<p>鬼束ちひろ</p>
+						</div>
+					</li>
+					<li><a href=""><div class="btn"><img src="img/button.png"></div><img src="img/10.jpg"></a>
+						<div id="" class='mark'>
+							<h3>LUB DUB</h3>
+							<p>투엘슨</p>
+						</div>
+					</li>
+					<li><a href=""><div class="btn"><img src="img/button.png"></div><img src="img/11.jpg"></a>
+						<div id="" class='mark'>
+							<h3>Forget Me Not</h3>
+							<p>中島美嘉 </p>
+						</div>
+					</li>
+					<li><a href=""><div class="btn"><img src="img/button.png"></div><img src="img/12.jpg"></a>
+						<div class="mark">
+							<h3>恋ごころ</h3>
+							<p>Da-iCE</p>
+						</div>
+					</li>
+					<li><a href=""><div class="btn"><img src="img/button.png"></div><img src="img/1.jpg"></a>
+						<div id="" class='mark'>
+							<h3>MEMORY</h3>
+							<p>MAMAMOO</p>
+						</div>
+					</li>
+					<li><a href=""><div class="btn"><img src="img/button.png"></div><img src="img/2.jpg"></a>
+						<div id="" class='mark'>
+							<h3>NEW MEN</h3>
+							<p>BTOB</p>
+						</div>
+					</li>
+					<li><a href=""><div class="btn"><img src="img/button.png"></div><img src="img/3.jpg"></a>
+						<div id="" class='mark'>
+							<h3>NOIR</h3>
+							<p>B.A.P</p>
+						</div>
+					</li>
+					<li><a href=""><div class="btn"><img src="img/button.png"></div><img src="img/4.jpg"></a>
+						<div id="" class='mark'>
+							<h3>王者归来 第6期</h3>
+							<p>王者归来</p>
+						</div>
+					</li>
+				</ul>
+			</div>
+
+		</section>
+
+	</body>
+</html>
